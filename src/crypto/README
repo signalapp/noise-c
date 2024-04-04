@@ -52,3 +52,8 @@ newhope
     Reference New Hope post-quantum key exchange algorithm, "torref" version.
     https://cryptojedi.org/crypto/#newhope
     Public domain
+
+kyber
+    Reference Kyber implementation.
+    https://github.com/pq-crystals/kyber
+    Public domain
