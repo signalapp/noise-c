@@ -57,3 +57,4 @@ kyber
     Reference Kyber implementation.
     https://github.com/pq-crystals/kyber
     Public domain
+    See diffs from original in kyber/diffs
