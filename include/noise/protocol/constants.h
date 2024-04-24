@@ -147,6 +147,7 @@ extern "C" {
 #define NOISE_ERROR_INVALID_PUBLIC_KEY  NOISE_ID('E', 15)
 #define NOISE_ERROR_INVALID_FORMAT      NOISE_ID('E', 16)
 #define NOISE_ERROR_INVALID_SIGNATURE   NOISE_ID('E', 17)
+#define NOISE_ERROR_NOT_IMPLEMENTED     NOISE_ID('E', 18)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

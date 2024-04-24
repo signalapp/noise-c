@@ -89,15 +89,13 @@ static int noise_kyber_set_keypair
 static int noise_kyber_validate_public_key
         (const NoiseDHState *state, const uint8_t *public_key)
 {
-    /* TODO: figure out what if anything to do here. */
-    return NOISE_ERROR_NONE;
+    return NOISE_ERROR_NOT_IMPLEMENTED;
 }
 
 static int noise_kyber_copy
     (NoiseDHState *state, const NoiseDHState *from, const NoiseDHState *other)
 {
-    /* TODO: this */
-    return NOISE_ERROR_NONE;
+    return NOISE_ERROR_NOT_IMPLEMENTED;
 }
 
 static int noise_kyber_calculate
