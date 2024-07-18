@@ -32,9 +32,9 @@ typedef struct NoiseKyberState_s
 {
     struct NoiseDHState_s parent;
     /* for INITIATOR, this is the secret key.  for RESPONDER, this is the precomputed shared bytes */
-    uint8_t kyber_priv[MAX_OF(pqcrystals_kyber768_ref_SECRETKEYBYTES, pqcrystals_kyber768_ref_BYTES)];
+    uint8_t kyber_priv[MAX_OF(pqcrystals_kyber1024_ref_SECRETKEYBYTES, pqcrystals_kyber1024_ref_BYTES)];
     /* for INITIATOR, this is the public key.  for RESPONDER, this is the CIPHERTEXT */
-    uint8_t kyber_pub[MAX_OF(pqcrystals_kyber768_ref_PUBLICKEYBYTES, pqcrystals_kyber768_ref_CIPHERTEXTBYTES)];
+    uint8_t kyber_pub[MAX_OF(pqcrystals_kyber1024_ref_PUBLICKEYBYTES, pqcrystals_kyber1024_ref_CIPHERTEXTBYTES)];
 } NoiseKyberState;
 
 static int noise_kyber_generate_keypair
@@ -46,13 +46,13 @@ static int noise_kyber_generate_keypair
         /* Generating the keypair for Bob relative to Alice's parameters */
         if (!os || os->parent.key_type == NOISE_KEY_TYPE_NO_KEY)
             return NOISE_ERROR_INVALID_STATE;
-        pqcrystals_kyber768_ref_enc(
+        pqcrystals_kyber1024_ref_enc(
             st->kyber_pub,
             st->kyber_priv,
             os->kyber_pub);
     } else {
         /* Generate the keypair for Alice */
-        pqcrystals_kyber768_ref_keypair(
+        pqcrystals_kyber1024_ref_keypair(
             st->kyber_pub,
             st->kyber_priv);
     }
@@ -108,10 +108,10 @@ static int noise_kyber_calculate
     if (priv_st->parent.role == NOISE_ROLE_RESPONDER) {
         /* We already generated the shared secret for Bob when we
          * generated the "keypair" for him. */
-        memcpy(shared_key, priv_st->kyber_priv, pqcrystals_kyber768_ref_BYTES);
+        memcpy(shared_key, priv_st->kyber_priv, pqcrystals_kyber1024_ref_BYTES);
     } else {
         /* Generate the shared secret for Alice */
-        pqcrystals_kyber768_ref_dec(shared_key, pub_st->kyber_pub, priv_st->kyber_priv);
+        pqcrystals_kyber1024_ref_dec(shared_key, pub_st->kyber_pub, priv_st->kyber_priv);
     }
     return NOISE_ERROR_NONE;
 }
@@ -120,11 +120,11 @@ static void noise_kyber_change_role(NoiseDHState *state)
 {
     /* Change the size of the keys based on the object's role */
     if (state->role == NOISE_ROLE_RESPONDER) {
-        state->private_key_len = pqcrystals_kyber768_ref_BYTES;
-        state->public_key_len = pqcrystals_kyber768_ref_CIPHERTEXTBYTES;
+        state->private_key_len = pqcrystals_kyber1024_ref_BYTES;
+        state->public_key_len = pqcrystals_kyber1024_ref_CIPHERTEXTBYTES;
     } else {
-        state->private_key_len = pqcrystals_kyber768_ref_SECRETKEYBYTES;
-        state->public_key_len = pqcrystals_kyber768_ref_PUBLICKEYBYTES;
+        state->private_key_len = pqcrystals_kyber1024_ref_SECRETKEYBYTES;
+        state->public_key_len = pqcrystals_kyber1024_ref_PUBLICKEYBYTES;
     }
 }
 
@@ -136,9 +136,9 @@ NoiseDHState *noise_kyber_new(void)
     state->parent.dh_id = NOISE_DH_KYBER;
     state->parent.ephemeral_only = 1;
     state->parent.nulls_allowed = 0;
-    state->parent.private_key_len = pqcrystals_kyber768_ref_SECRETKEYBYTES;
-    state->parent.public_key_len = pqcrystals_kyber768_ref_PUBLICKEYBYTES;
-    state->parent.shared_key_len = pqcrystals_kyber768_ref_BYTES;
+    state->parent.private_key_len = pqcrystals_kyber1024_ref_SECRETKEYBYTES;
+    state->parent.public_key_len = pqcrystals_kyber1024_ref_PUBLICKEYBYTES;
+    state->parent.shared_key_len = pqcrystals_kyber1024_ref_BYTES;
     state->parent.private_key = state->kyber_priv;
     state->parent.public_key = state->kyber_pub;
     state->parent.generate_keypair = noise_kyber_generate_keypair;
