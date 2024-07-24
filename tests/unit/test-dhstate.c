@@ -376,9 +376,9 @@ static void dhstate_check_test_vectors(void)
          "0x00000000000000000000000000000000000000000000000000000000"
            "00000000000000000000000000000000000000000000000000000000");
 
-    /* NewHope - Test vectors from the reference implementation of "torref" */
+    /* KYBER1024 - Test vectors from the reference implementation of "torref" */
     check_dh
-        (NOISE_DH_NEWHOPE, 64, 1824, 2048, 32, "NewHope",
+        (NOISE_DH_KYBER1024, 64, 1824, 2048, 32, "Kyber1024",
          0, NOISE_ROLE_INITIATOR,
          /* Alice's private key */
          "0x934d60b35624d740b30a7f227af2ae7c678e4e04e13c5f509eade2b79aea77e2"
@@ -509,7 +509,7 @@ static void dhstate_check_test_vectors(void)
          /* Shared secret */
          "0x78d62ad989a3bd740f87b2cf6f914dfe8cb1ea52c4c9ad82ddac9a45ba8e59cb");
     check_dh
-        (NOISE_DH_NEWHOPE, 32, 2048, 1824, 32, "NewHope",
+        (NOISE_DH_KYBER1024, 32, 2048, 1824, 32, "Kyber1024",
          0, NOISE_ROLE_RESPONDER,
          /* Bob's private key */
          "0xbac5ba881dd35c59719670004692d675b83c98db6a0e55800bafeb7e70491bf4",
@@ -665,12 +665,12 @@ static void check_dh_generate(int id)
 
     /* Generate keypairs for Alice and Bob */
     compare(noise_dhstate_generate_keypair(state1), NOISE_ERROR_NONE);
-    if (id != NOISE_DH_NEWHOPE) {
+    if (id != NOISE_DH_KYBER1024) {
         verify(!noise_dhstate_is_ephemeral_only(state1));
         verify(!noise_dhstate_is_ephemeral_only(state2));
         compare(noise_dhstate_generate_keypair(state2), NOISE_ERROR_NONE);
     } else {
-        /* Check the NewHope parameters */
+        /* Check the KYBER1024 parameters */
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
         compare(noise_dhstate_get_private_key_length(state1), 64);
@@ -678,7 +678,7 @@ static void check_dh_generate(int id)
         compare(noise_dhstate_get_private_key_length(state2), 32);
         compare(noise_dhstate_get_public_key_length(state2), 2048);
 
-        /* NewHope is "mutual" so Bob's object needs to know about Alice's
+        /* KYBER1024 is "mutual" so Bob's object needs to know about Alice's
          * so that it will generate Bob's "keypair" with respect to the
          * parameters in Alice's public key. */
         compare(noise_dhstate_generate_dependent_keypair(state2, state1),
@@ -707,7 +707,7 @@ static void dhstate_check_generate_keypair(void)
 {
     check_dh_generate(NOISE_DH_CURVE25519);
     check_dh_generate(NOISE_DH_CURVE448);
-    check_dh_generate(NOISE_DH_NEWHOPE);
+    check_dh_generate(NOISE_DH_KYBER1024);
 }
 
 /* Check other error conditions that can be reported by the functions */

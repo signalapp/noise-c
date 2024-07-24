@@ -75,7 +75,7 @@ static uint8_t const fixed_ephemeral_448[56] = {
 };
 
 /* New Hope private key to use when fixed ephemeral mode is selected */
-static uint8_t const fixed_ephemeral_newhope[64] = {
+static uint8_t const fixed_ephemeral_kyber1024[64] = {
     0x93, 0x4d, 0x60, 0xb3, 0x56, 0x24, 0xd7, 0x40,
     0xb3, 0x0a, 0x7f, 0x22, 0x7a, 0xf2, 0xae, 0x7c,
     0x67, 0x8e, 0x4e, 0x04, 0xe1, 0x3c, 0x5f, 0x50,
@@ -149,9 +149,9 @@ static int set_fixed_ephemeral(NoiseDHState *dh)
     } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
         return noise_dhstate_set_keypair_private
             (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
-    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_NEWHOPE) {
+    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_KYBER1024) {
         return noise_dhstate_set_keypair_private
-            (dh, fixed_ephemeral_newhope, sizeof(fixed_ephemeral_newhope));
+            (dh, fixed_ephemeral_kyber1024, sizeof(fixed_ephemeral_kyber1024));
     } else {
         return NOISE_ERROR_UNKNOWN_ID;
     }
