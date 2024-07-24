@@ -81,13 +81,10 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
         *state = noise_curve448_new();
         break;
 
-    case NOISE_DH_NEWHOPE:
-        *state = noise_newhope_new();
-        break;
-
-    case NOISE_DH_KYBER:
-        *state = noise_kyber_new();
-        break;
+    case NOISE_DH_KYBER1024: {
+        NoiseDHState* got = noise_kyber_new();
+        *state = got;
+    }   break;
 
     default:
         return NOISE_ERROR_UNKNOWN_ID;
@@ -521,6 +518,7 @@ int noise_dhstate_set_public_key
         return NOISE_ERROR_INVALID_PARAM;
     if (public_key_len != state->public_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
+
 
     /* Validate the public key with the back end and then ignore the
        result if the public key is the special null value */

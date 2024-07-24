@@ -677,7 +677,7 @@ static uint8_t const noise_pattern_NNhfs[] = {
  *   <- e, f, ee, ff
  * @endcode
  */
-static uint8_t const noise_pattern_NKhfs[] = {
+static uint8_t const noise_pattern_NKhfs_old[] = {
     FLAGS(
     NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_LOCAL_HYBRID |
@@ -695,6 +695,26 @@ static uint8_t const noise_pattern_NKhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
     NOISE_TOKEN_FF,
+    NOISE_TOKEN_END
+};
+
+static uint8_t const noise_pattern_NKhfs[] = {
+    FLAGS(
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_LOCAL_HYBRID |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_REQUIRED |
+    NOISE_PAT_FLAG_REMOTE_HYBRID
+    ),
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_END
 };
 
