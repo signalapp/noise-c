@@ -52,6 +52,12 @@ static uint8_t next_token(const char **pattern)
     } else if (!strncmp(pat, "se", 2)) {
         pat += 2;
         token = NOISE_TOKEN_SE;
+    } else if (!strncmp(pat, "e1", 2)) {
+        pat += 2;
+        token = NOISE_TOKEN_E1;
+    } else if (!strncmp(pat, "ekem1", 5)) {
+        pat += 5;
+        token = NOISE_TOKEN_EKEM1;
     } else if (!strncmp(pat, "e", 1)) {
         pat += 1;
         token = NOISE_TOKEN_E;
@@ -61,12 +67,6 @@ static uint8_t next_token(const char **pattern)
     } else if (!strncmp(pat, "s", 1)) {
         pat += 1;
         token = NOISE_TOKEN_S;
-    } else if (!strncmp(pat, "ff", 2)) {
-        pat += 2;
-        token = NOISE_TOKEN_FF;
-    } else if (!strncmp(pat, "f", 1)) {
-        pat += 1;
-        token = NOISE_TOKEN_F;
     } else if (!strncmp(pat, "<-", 2)) {
         pat += 2;
         token = NOISE_TOKEN_LARROW;
@@ -210,7 +210,7 @@ static void check_pattern(int id, const char *name, const char *required,
             verify(role == NOISE_ROLE_RESPONDER);
             seen_flags |= NOISE_PAT_FLAG_REMOTE_EPHEM_REQ |
                           NOISE_PAT_FLAG_REMOTE_EPHEMERAL;
-        } else if (token == NOISE_TOKEN_F) {
+        } else if (token == NOISE_TOKEN_E1) {
             verify(role == NOISE_ROLE_RESPONDER);
             seen_flags |= NOISE_PAT_FLAG_REMOTE_HYBRID_REQ |
                           NOISE_PAT_FLAG_REMOTE_HYBRID;
@@ -286,13 +286,13 @@ static void check_pattern(int id, const char *name, const char *required,
                     verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
                     verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
                     break;
-                case NOISE_TOKEN_F:
+                case NOISE_TOKEN_E1:
                     if (role == NOISE_ROLE_INITIATOR)
                         seen_flags |= NOISE_PAT_FLAG_LOCAL_HYBRID;
                     else
                         seen_flags |= NOISE_PAT_FLAG_REMOTE_HYBRID;
                     break;
-                case NOISE_TOKEN_FF:
+                case NOISE_TOKEN_EKEM1:
                     verify(seen_flags & NOISE_PAT_FLAG_LOCAL_HYBRID);
                     verify(seen_flags & NOISE_PAT_FLAG_REMOTE_HYBRID);
                     break;
