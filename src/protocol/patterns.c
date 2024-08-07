@@ -657,12 +657,11 @@ static uint8_t const noise_pattern_NNhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_END
 };
 
@@ -688,13 +687,12 @@ static uint8_t const noise_pattern_NKhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_END
 };
 
@@ -717,12 +715,11 @@ static uint8_t const noise_pattern_NXhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_END
@@ -748,12 +745,11 @@ static uint8_t const noise_pattern_XNhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
     NOISE_TOKEN_SE,
@@ -784,13 +780,12 @@ static uint8_t const noise_pattern_XKhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
     NOISE_TOKEN_SE,
@@ -818,12 +813,11 @@ static uint8_t const noise_pattern_XXhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
@@ -854,12 +848,11 @@ static uint8_t const noise_pattern_KNhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
@@ -889,14 +882,13 @@ static uint8_t const noise_pattern_KKhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
@@ -924,12 +916,11 @@ static uint8_t const noise_pattern_KXhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
     NOISE_TOKEN_ES,
@@ -955,13 +946,12 @@ static uint8_t const noise_pattern_INhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
@@ -989,15 +979,14 @@ static uint8_t const noise_pattern_IKhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
@@ -1022,13 +1011,12 @@ static uint8_t const noise_pattern_IXhfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
     NOISE_TOKEN_ES,
@@ -1059,9 +1047,8 @@ static uint8_t const noise_pattern_XXfallback_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_FLIP_DIR,
@@ -1089,13 +1076,12 @@ static uint8_t const noise_pattern_NXnoidh_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
@@ -1121,13 +1107,12 @@ static uint8_t const noise_pattern_XXnoidh_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
@@ -1158,13 +1143,12 @@ static uint8_t const noise_pattern_KXnoidh_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_END
@@ -1193,15 +1177,14 @@ static uint8_t const noise_pattern_IKnoidh_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
     NOISE_TOKEN_ES,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
@@ -1226,14 +1209,13 @@ static uint8_t const noise_pattern_IXnoidh_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
     NOISE_TOKEN_EE,
-    NOISE_TOKEN_FF,
+    NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_SE,
     NOISE_TOKEN_ES,
     NOISE_TOKEN_END

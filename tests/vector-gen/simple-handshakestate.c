@@ -241,7 +241,7 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
         switch (*(handshake->pattern)++) {
         case NOISE_TOKEN_E:
             if (noise_dhstate_get_dh_id(handshake->dh_private)
-                        == NOISE_DH_NEWHOPE &&
+                        == NOISE_DH_KYBER1024 &&
                     noise_dhstate_get_role(handshake->dh_private)
                         == NOISE_ROLE_RESPONDER) {
                 /* New Hope needs special support for dependent fixed keygen.
@@ -267,62 +267,12 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
             index += len;
             break;
 
-        case NOISE_TOKEN_F:
-            if (handshake->hybrid_private) {
-                if (noise_dhstate_get_dh_id(handshake->hybrid_private)
-                            == NOISE_DH_NEWHOPE &&
-                        noise_dhstate_get_role(handshake->hybrid_private)
-                            == NOISE_ROLE_RESPONDER) {
-                    /* New Hope needs special support for dependent fixed
-                       keygen.  The public key for Bob isn't generated until
-                       calculate() */
-                    len = noise_dhstate_get_public_key_length
-                        (handshake->hybrid_private);
-                    noise_dhstate_set_keypair_private
-                        (handshake->hybrid_private, handshake->f,
-                         handshake->f_len);
-                    noise_dhstate_set_public_key
-                        (handshake->hybrid_public, handshake->rf,
-                         handshake->rf_len);
-                    noise_dhstate_calculate
-                        (handshake->hybrid_private, handshake->hybrid_public,
-                         data.data, 32);
-                    noise_dhstate_get_public_key
-                        (handshake->hybrid_private, data.data, len);
-                } else {
-                    len = handshake->f_public_len;
-                    memcpy(data.data, handshake->f_public, len);
-                }
-                data.size = len;
-                data = EncryptAndHash(&(handshake->symmetric), data);
-                memcpy(message->data + index, data.data, data.size);
-                index += data.size;
-            }
-            break;
-
         case NOISE_TOKEN_S:
             memcpy(data.data, handshake->s_public, handshake->s_public_len);
             data.size = handshake->s_public_len;
             data = EncryptAndHash(&(handshake->symmetric), data);
             memcpy(message->data + index, data.data, data.size);
             index += data.size;
-            break;
-
-        case NOISE_TOKEN_FF:
-            if (handshake->hybrid_private) {
-                noise_dhstate_set_keypair_private
-                    (handshake->hybrid_private, handshake->f,
-                     handshake->f_len);
-                noise_dhstate_set_public_key
-                    (handshake->hybrid_public, handshake->rf,
-                     handshake->rf_len);
-                len = noise_dhstate_get_shared_key_length
-                    (handshake->hybrid_private);
-                noise_dhstate_calculate
-                    (handshake->hybrid_private, handshake->hybrid_public,
-                     data.data, len);
-                MixKey(&(handshake->symmetric), data.data, len);
-            }
             break;
 
         case NOISE_TOKEN_EE:
@@ -422,7 +372,7 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             }
             break;
 
-        case NOISE_TOKEN_F:
+        case NOISE_TOKEN_E1:
             if (handshake->hybrid_public) {
                 handshake->rf_len = noise_dhstate_get_public_key_length
                     (handshake->hybrid_public);
@@ -465,7 +415,7 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             MixKey(&(handshake->symmetric), data.data, len);
             break;
 
-        case NOISE_TOKEN_FF:
+        case NOISE_TOKEN_EKEM1:
             if (handshake->hybrid_private) {
                 noise_dhstate_set_keypair_private
                     (handshake->hybrid_private, handshake->f,

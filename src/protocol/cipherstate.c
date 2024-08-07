@@ -383,8 +383,9 @@ int noise_cipherstate_decrypt_with_ad
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the key hasn't been set yet, return the ciphertext as-is */
-    if (!state->has_key)
+    if (!state->has_key) {
         return NOISE_ERROR_NONE;
+    }
 
     /* Make sure there are enough bytes for the MAC */
     if (buffer->size < state->mac_len)

@@ -52,13 +52,13 @@
 
 #define ECHO_DH_25519               0x00
 #define ECHO_DH_448                 0x01
-#define ECHO_DH_NEWHOPE             0x02
+#define ECHO_DH_KYBER1024           0x02
 #define ECHO_DH_MASK                0x0F
 
 #define ECHO_HYBRID_NONE            0x00
 #define ECHO_HYBRID_25519           0x10
 #define ECHO_HYBRID_448             0x20
-#define ECHO_HYBRID_NEWHOPE         0x30
+#define ECHO_HYBRID_KYBER1024       0x30
 #define ECHO_HYBRID_MASK            0xF0
 
 #define ECHO_HASH_SHA256            0x00

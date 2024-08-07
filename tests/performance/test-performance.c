@@ -428,7 +428,7 @@ int main(int argc, char *argv[])
     perf_dh_derive(NOISE_DH_CURVE448);
     perf_dh_calculate(NOISE_DH_CURVE25519);
     perf_dh_calculate(NOISE_DH_CURVE448);
-    perf_dh_ephemeral_only(NOISE_DH_NEWHOPE);
+    perf_dh_ephemeral_only(NOISE_DH_KYBER1024);
 
     /* Measure the performance of the signing primitives */
     perf_sign_derive(NOISE_SIGN_ED25519);

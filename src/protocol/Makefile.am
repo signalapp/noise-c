@@ -10,8 +10,8 @@ GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/p448 \
 	-I$(GOLDILOCKS_SRCDIR)/p448/@GOLDILOCKS_ARCH@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS)
-AM_CFLAGS = @WARNING_FLAGS@ -DKYBER_K=3
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS) -I$(top_srcdir)/src/crypto/pqclean/common
+AM_CFLAGS = @WARNING_FLAGS@ -DKYBER_K=4
 
 if USE_OPENSSL
 AM_CPPFLAGS += -DUSE_OPENSSL=1
@@ -41,53 +41,23 @@ libnoiseprotocol_a_SOURCES = \
 	symmetricstate.c \
 	util.c \
 	../backend/ref/dh-curve448.c \
-	../backend/ref/dh-newhope.c \
 	../backend/ref/dh-kyber.c \
 	../backend/ref/hash-blake2s.c \
 	../crypto/blake2/blake2s.c \
 	../crypto/curve448/curve448.c \
 	../crypto/goldilocks/src/p448/@GOLDILOCKS_ARCH@/p448.c \
-	../crypto/newhope/batcher.c \
-	../crypto/newhope/error_correction.c \
-	../crypto/newhope/error_correction.h \
-	../crypto/newhope/fips202.c \
-	../crypto/newhope/fips202.h \
-	../crypto/newhope/newhope.c \
-	../crypto/newhope/newhope.h \
-	../crypto/newhope/ntt.c \
-	../crypto/newhope/ntt.h \
-	../crypto/newhope/params.h \
-	../crypto/newhope/poly.c \
-	../crypto/newhope/poly.h \
-	../crypto/newhope/precomp.c \
-	../crypto/newhope/randombytes.h \
-	../crypto/newhope/reduce.c \
-	../crypto/newhope/reduce.h \
-	../crypto/kyber/symmetric-shake.c \
-	../crypto/kyber/ntt.c \
-	../crypto/kyber/poly.c \
-	../crypto/kyber/reduce.c \
-	../crypto/kyber/indcpa.c \
-	../crypto/kyber/kex.c \
-	../crypto/kyber/reduce.h \
-	../crypto/kyber/ntt.h \
-	../crypto/kyber/verify.c \
-	../crypto/kyber/fips202.c \
-	../crypto/kyber/api.h \
-	../crypto/kyber/poly.h \
-	../crypto/kyber/randombytes.h \
-	../crypto/kyber/cbd.h \
-	../crypto/kyber/fips202.h \
-	../crypto/kyber/symmetric.h \
-	../crypto/kyber/kem.h \
-	../crypto/kyber/indcpa.h \
-	../crypto/kyber/params.h \
-	../crypto/kyber/kem.c \
-	../crypto/kyber/verify.h \
-	../crypto/kyber/kex.h \
-	../crypto/kyber/polyvec.h \
-	../crypto/kyber/cbd.c \
-	../crypto/kyber/polyvec.c
+	../crypto/pqclean/crypto_kem/kyber1024/clean/cbd.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/indcpa.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/kem.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/ntt.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/poly.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/polyvec.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/reduce.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/symmetric-shake.c \
+	../crypto/pqclean/crypto_kem/kyber1024/clean/verify.c \
+	../crypto/pqclean/common/sha2.c \
+	../crypto/pqclean/common/fips202.c
+
 
 if USE_OPENSSL
 libnoiseprotocol_a_SOURCES += \

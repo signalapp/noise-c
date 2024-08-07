@@ -593,8 +593,8 @@ struct NoiseHandshakeState_s
 #define NOISE_TOKEN_ES          4   /**< "es" token */
 #define NOISE_TOKEN_SE          5   /**< "se" token */
 #define NOISE_TOKEN_SS          6   /**< "ss" token */
-#define NOISE_TOKEN_F           7   /**< "f" token (hybrid forward secrecy) */
-#define NOISE_TOKEN_FF          8   /**< "ff" token (hybrid forward secrecy) */
+#define NOISE_TOKEN_E1          7   /**< "e1" token (HFS spec) */
+#define NOISE_TOKEN_EKEM1       8   /**< "ekem1" token (HFS spec) */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
 
 /** Pattern requires a local static keypair */
@@ -662,7 +662,6 @@ NoiseHashState *noise_sha512_new(void);
 
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
-NoiseDHState *noise_newhope_new(void);
 NoiseDHState *noise_kyber_new(void);
 
 NoiseSignState *noise_ed25519_new(void);

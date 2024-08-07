@@ -36,10 +36,10 @@ typedef struct
     uint8_t k448_private[56];
     uint8_t k25519_public[32];
     uint8_t k448_public[56];
-    uint8_t knewhope_private[64];
-    size_t  knewhope_private_len;
-    uint8_t knewhope_public[2048];
-    size_t  knewhope_public_len;
+    uint8_t kkyber1024_private[64];
+    size_t  kkyber1024_private_len;
+    uint8_t kkyber1024_public[2048];
+    size_t  kkyber1024_public_len;
 } Key;
 
 // Values for populating keys, prologues, etc.
@@ -635,8 +635,8 @@ static void print_key(const char *field, const Key *key, int id)
 {
     if (id == NOISE_DH_CURVE25519)
         print_hex(field, key->k25519_private, sizeof(key->k25519_private));
-    else if (id == NOISE_DH_NEWHOPE)
-        print_hex(field, key->knewhope_private, key->knewhope_private_len);
+    else if (id == NOISE_DH_KYBER1024)
+        print_hex(field, key->kkyber1024_private, key->kkyber1024_private_len);
     else
         print_hex(field, key->k448_private, sizeof(key->k448_private));
 }
@@ -645,8 +645,8 @@ static void print_public_key(const char *field, const Key *key, int id)
 {
     if (id == NOISE_DH_CURVE25519)
         print_hex(field, key->k25519_public, sizeof(key->k25519_public));
-    else if (id == NOISE_DH_NEWHOPE)
-        print_hex(field, key->knewhope_public, key->knewhope_public_len);
+    else if (id == NOISE_DH_KYBER1024)
+        print_hex(field, key->kkyber1024_public, key->kkyber1024_public_len);
     else
         print_hex(field, key->k448_public, sizeof(key->k448_public));
 }
@@ -656,9 +656,9 @@ static void get_key(const uint8_t **k, size_t *klen, const Key *key, int id)
     if (id == NOISE_DH_CURVE25519) {
         *k = key->k25519_private;
         *klen = sizeof(key->k25519_private);
-    } else if (id == NOISE_DH_NEWHOPE) {
-        *k = key->knewhope_private;
-        *klen = key->knewhope_private_len;
+    } else if (id == NOISE_DH_KYBER1024) {
+        *k = key->kkyber1024_private;
+        *klen = key->kkyber1024_private_len;
     } else {
         *k = key->k448_private;
         *klen = sizeof(key->k448_private);
@@ -670,9 +670,9 @@ static void get_public_key(const uint8_t **k, size_t *klen, const Key *key, int 
     if (id == NOISE_DH_CURVE25519) {
         *k = key->k25519_public;
         *klen = sizeof(key->k25519_public);
-    } else if (id == NOISE_DH_NEWHOPE) {
-        *k = key->knewhope_public;
-        *klen = key->knewhope_public_len;
+    } else if (id == NOISE_DH_KYBER1024) {
+        *k = key->kkyber1024_public;
+        *klen = key->kkyber1024_public_len;
     } else {
         *k = key->k448_public;
         *klen = sizeof(key->k448_public);
@@ -1082,13 +1082,13 @@ static void hybrid_patterns(int with_ssk)
     int first = 1;
     int fallback_id;
 
-    /* Basic hybrid patterns involving 25519+448 and 25519+NewHope */
+    /* Basic hybrid patterns involving 25519+448 and 25519+Kyber1024 */
     memset(&id, 0, sizeof(id));
     for (id.pattern_id = NOISE_PATTERN_NN_HFS; id.pattern_id <= NOISE_PATTERN_IX_HFS; ++id.pattern_id) {
         for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
             for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
                 id.dh_id = NOISE_DH_CURVE25519;
-                for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+                for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_KYBER1024; ++id.hybrid_id) {
                     for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                         generate_vector(&id, first, 0, 0);
                         first = 0;
@@ -1109,7 +1109,7 @@ static void hybrid_patterns(int with_ssk)
             continue;   /* Hybrid fallback doesn't work with PSK's */
         for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
             id.dh_id = NOISE_DH_CURVE25519;
-            for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+            for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_KYBER1024; ++id.hybrid_id) {
                 for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                     generate_vector(&id, first, 0, fallback_id);
                     first = 0;
