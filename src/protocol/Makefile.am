@@ -11,7 +11,7 @@ GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/p448/@GOLDILOCKS_ARCH@
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS)
-AM_CFLAGS = @WARNING_FLAGS@
+AM_CFLAGS = @WARNING_FLAGS@ -DKYBER_K=3
 
 if USE_OPENSSL
 AM_CPPFLAGS += -DUSE_OPENSSL=1
@@ -42,6 +42,7 @@ libnoiseprotocol_a_SOURCES = \
 	util.c \
 	../backend/ref/dh-curve448.c \
 	../backend/ref/dh-newhope.c \
+	../backend/ref/dh-kyber.c \
 	../backend/ref/hash-blake2s.c \
 	../crypto/blake2/blake2s.c \
 	../crypto/curve448/curve448.c \
@@ -61,7 +62,32 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/newhope/precomp.c \
 	../crypto/newhope/randombytes.h \
 	../crypto/newhope/reduce.c \
-	../crypto/newhope/reduce.h
+	../crypto/newhope/reduce.h \
+	../crypto/kyber/symmetric-shake.c \
+	../crypto/kyber/ntt.c \
+	../crypto/kyber/poly.c \
+	../crypto/kyber/reduce.c \
+	../crypto/kyber/indcpa.c \
+	../crypto/kyber/kex.c \
+	../crypto/kyber/reduce.h \
+	../crypto/kyber/ntt.h \
+	../crypto/kyber/verify.c \
+	../crypto/kyber/fips202.c \
+	../crypto/kyber/api.h \
+	../crypto/kyber/poly.h \
+	../crypto/kyber/randombytes.h \
+	../crypto/kyber/cbd.h \
+	../crypto/kyber/fips202.h \
+	../crypto/kyber/symmetric.h \
+	../crypto/kyber/kem.h \
+	../crypto/kyber/indcpa.h \
+	../crypto/kyber/params.h \
+	../crypto/kyber/kem.c \
+	../crypto/kyber/verify.h \
+	../crypto/kyber/kex.h \
+	../crypto/kyber/polyvec.h \
+	../crypto/kyber/cbd.c \
+	../crypto/kyber/polyvec.c
 
 if USE_OPENSSL
 libnoiseprotocol_a_SOURCES += \
