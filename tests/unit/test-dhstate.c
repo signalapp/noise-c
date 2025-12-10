@@ -22,7 +22,8 @@
 
 #include "test-helpers.h"
 
-#define MAX_DH_KEY_LEN 2048
+/* Increase to accommodate Kyber-1024 secret key (3168 bytes) */
+#define MAX_DH_KEY_LEN 4096
 
 /* Check raw DH output against test vectors */
 static void check_dh(int id, size_t private_key_len, size_t public_key_len,
@@ -45,8 +46,17 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     static uint8_t temp2[MAX_DH_KEY_LEN];
 
     /* Convert the test strings into binary data */
-    compare(string_to_data(priv_key, sizeof(priv_key), private_key),
-            private_key_len);
+    size_t priv_len = private_key_len;
+    if (id == NOISE_DH_KYBER1024 && role == NOISE_ROLE_RESPONDER) {
+        /* For Kyber responder, the "private" value is the precomputed
+           shared secret (32 bytes) rather than the initiator's secret key. */
+        priv_len = shared_key_len;
+        compare(string_to_data(priv_key, sizeof(priv_key), shared_key),
+                priv_len);
+    } else {
+        compare(string_to_data(priv_key, sizeof(priv_key), private_key),
+                priv_len);
+    }
     compare(string_to_data(pub_key, sizeof(pub_key), public_key),
             public_key_len);
     compare(string_to_data(other_pub_key, sizeof(other_pub_key),
@@ -58,7 +68,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_dhstate_new_by_id(&state1, id), NOISE_ERROR_NONE);
     compare(noise_dhstate_get_dh_id(state1), id);
     compare(noise_dhstate_set_role(state1, role), NOISE_ERROR_NONE);
-    compare(noise_dhstate_get_private_key_length(state1), private_key_len);
+    compare(noise_dhstate_get_private_key_length(state1), priv_len);
     compare(noise_dhstate_get_public_key_length(state1), public_key_len);
     compare(noise_dhstate_get_shared_key_length(state1), shared_key_len);
     verify(!noise_dhstate_has_keypair(state1));
@@ -72,7 +82,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_dhstate_new_by_id(&state2, id), NOISE_ERROR_NONE);
     compare(noise_dhstate_set_role(state2, inverse_role), NOISE_ERROR_NONE);
     compare(noise_dhstate_get_dh_id(state2), id);
-    if (public_key_len == other_public_key_len)
+    if (id != NOISE_DH_KYBER1024 && public_key_len == other_public_key_len)
         compare(noise_dhstate_get_private_key_length(state2), private_key_len);
     compare(noise_dhstate_get_public_key_length(state2), other_public_key_len);
     compare(noise_dhstate_get_shared_key_length(state2), shared_key_len);
@@ -82,7 +92,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
 
     /* Set the keys on the DH objects */
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len, pub_key, public_key_len),
+                (state1, priv_key, priv_len, pub_key, public_key_len),
             NOISE_ERROR_NONE);
     compare(noise_dhstate_set_public_key
                 (state2, other_pub_key, other_public_key_len),
@@ -104,9 +114,9 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     memset(temp, 0xAA, sizeof(temp));
     memset(temp2, 0x66, sizeof(temp2));
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len, temp2, public_key_len),
+                (state1, temp, priv_len, temp2, public_key_len),
             NOISE_ERROR_NONE);
-    verify(!memcmp(temp, priv_key, private_key_len));
+    verify(!memcmp(temp, priv_key, priv_len));
     verify(!memcmp(temp2, pub_key, public_key_len));
     memset(temp, 0xAA, sizeof(temp));
     compare(noise_dhstate_get_public_key(state2, temp, other_public_key_len),
@@ -115,46 +125,46 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
 
     /* Check parameter error conditions */
     compare(noise_dhstate_set_keypair
-                (0, priv_key, private_key_len, pub_key, public_key_len),
+                (0, priv_key, priv_len, pub_key, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_set_keypair
-                (state1, 0, private_key_len, pub_key, public_key_len),
+                (state1, 0, priv_len, pub_key, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len, 0, public_key_len),
+                (state1, priv_key, priv_len, 0, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len - 1, pub_key, public_key_len),
+                (state1, priv_key, priv_len - 1, pub_key, public_key_len),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len + 1, pub_key, public_key_len),
+                (state1, priv_key, priv_len + 1, pub_key, public_key_len),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len, pub_key, public_key_len + 1),
+                (state1, priv_key, priv_len, pub_key, public_key_len + 1),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len, pub_key, public_key_len - 1),
+                (state1, priv_key, priv_len, pub_key, public_key_len - 1),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_get_keypair
-                (0, temp, private_key_len, temp2, public_key_len),
+                (0, temp, priv_len, temp2, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_get_keypair
-                (state1, 0, private_key_len, temp2, public_key_len),
+                (state1, 0, priv_len, temp2, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len, 0, public_key_len),
+                (state1, temp, priv_len, 0, public_key_len),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len - 1, temp2, public_key_len),
+                (state1, temp, priv_len - 1, temp2, public_key_len),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len + 1, temp2, public_key_len),
+                (state1, temp, priv_len + 1, temp2, public_key_len),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len, temp2, public_key_len - 1),
+                (state1, temp, priv_len, temp2, public_key_len - 1),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len, temp2, public_key_len + 1),
+                (state1, temp, priv_len, temp2, public_key_len + 1),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_dhstate_set_public_key
                 (0, other_pub_key, public_key_len),
@@ -210,10 +220,10 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_dhstate_set_role(state2, inverse_role), NOISE_ERROR_NONE);
     compare(noise_dhstate_get_dh_id(state1), id);
     compare(noise_dhstate_get_dh_id(state2), id);
-    compare(noise_dhstate_get_private_key_length(state1), private_key_len);
+    compare(noise_dhstate_get_private_key_length(state1), priv_len);
     compare(noise_dhstate_get_public_key_length(state1), public_key_len);
     compare(noise_dhstate_get_shared_key_length(state1), shared_key_len);
-    if (public_key_len == other_public_key_len)
+    if (id != NOISE_DH_KYBER1024 && public_key_len == other_public_key_len)
         compare(noise_dhstate_get_private_key_length(state2), private_key_len);
     compare(noise_dhstate_get_public_key_length(state2), other_public_key_len);
     compare(noise_dhstate_get_shared_key_length(state2), shared_key_len);
@@ -228,7 +238,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
        This time we derive state1's public key from the private key rather
        than use the value from the test data. */
     compare(noise_dhstate_set_keypair_private
-                (state1, priv_key, private_key_len),
+                (state1, priv_key, priv_len),
             NOISE_ERROR_NONE);
     compare(noise_dhstate_set_public_key
                 (state2, other_pub_key, other_public_key_len),
@@ -256,7 +266,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     verify(!noise_dhstate_has_public_key(state1));
     verify(!noise_dhstate_is_null_public_key(state1));
     compare(noise_dhstate_get_keypair
-                (state1, temp, private_key_len, temp2, public_key_len),
+                (state1, temp, priv_len, temp2, public_key_len),
             NOISE_ERROR_INVALID_STATE);
     compare(noise_dhstate_get_public_key(state1, temp, public_key_len),
             NOISE_ERROR_NONE);
@@ -376,9 +386,9 @@ static void dhstate_check_test_vectors(void)
          "0x00000000000000000000000000000000000000000000000000000000"
            "00000000000000000000000000000000000000000000000000000000");
 
-    /* KYBER1024 - Test vectors from the reference implementation of "torref" */
+    /* KYBER1024 - Test vectors updated for NL-KEM (Kyber-1024) sizes */
     check_dh
-        (NOISE_DH_KYBER1024, 64, 1824, 2048, 32, "Kyber1024",
+        (NOISE_DH_KYBER1024, 3168, 1568, 1568, 32, "Kyber1024",
          0, NOISE_ROLE_INITIATOR,
          /* Alice's private key */
          "0x891865aef10cb22387cae735180b85d14c436f931790804047f7363715b2c1c4"
@@ -583,7 +593,7 @@ static void dhstate_check_test_vectors(void)
          /* Shared secret */
          "0xd21f12340f877656fbb2733d0c73cab35a689313892a28d539a43442d7c40a83");
     check_dh
-        (NOISE_DH_KYBER1024, 32, 2048, 1824, 32, "Kyber1024",
+        (NOISE_DH_KYBER1024, 32, 1568, 1568, 32, "Kyber1024",
          0, NOISE_ROLE_RESPONDER,
          "0x891865aef10cb22387cae735180b85d14c436f931790804047f7363715b2c1c4"
            "30d39667f765af885a7ca5aa79dc54cdfcbac3b7aa5b55868b79d69498f858a7"
@@ -821,10 +831,10 @@ static void check_dh_generate(int id)
         /* Check the KYBER1024 parameters */
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
-        compare(noise_dhstate_get_private_key_length(state1), 64);
-        compare(noise_dhstate_get_public_key_length(state1), 1824);
+        compare(noise_dhstate_get_private_key_length(state1), 3168);
+        compare(noise_dhstate_get_public_key_length(state1), 1568);
         compare(noise_dhstate_get_private_key_length(state2), 32);
-        compare(noise_dhstate_get_public_key_length(state2), 2048);
+        compare(noise_dhstate_get_public_key_length(state2), 1568);
 
         /* KYBER1024 is "mutual" so Bob's object needs to know about Alice's
          * so that it will generate Bob's "keypair" with respect to the
