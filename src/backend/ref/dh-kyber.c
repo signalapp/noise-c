@@ -66,12 +66,24 @@ static int noise_kyber_generate_keypair
 static int noise_kyber_set_keypair_private
         (NoiseDHState *state, const uint8_t *private_key)
 {
-    /* Private key is a concatenation of [priv_key_bytes][pub_key_bytes][pub_key_sha256] */
     NoiseKyberState *st = (NoiseKyberState *)state;
-    if (st->parent.private_key_len != KYBER_SECRETKEYBYTES)
-        return NOISE_ERROR_INVALID_PRIVATE_KEY;
-    memcpy(st->kyber_priv, private_key, KYBER_SECRETKEYBYTES);
-    memcpy(st->kyber_pub, private_key + KYBER_INDCPA_SECRETKEYBYTES, KYBER_PUBLICKEYBYTES);
+
+    if (state->role == NOISE_ROLE_INITIATOR) {
+        /* For INITIATOR: private_key is the full Kyber secret key (3168 bytes)
+           which is a concatenation of [priv_key_bytes][pub_key_bytes][pub_key_sha256] */
+        if (st->parent.private_key_len != KYBER_SECRETKEYBYTES)
+            return NOISE_ERROR_INVALID_PRIVATE_KEY;
+        memcpy(st->kyber_priv, private_key, KYBER_SECRETKEYBYTES);
+        /* Extract the public key from the secret key structure */
+        memcpy(st->kyber_pub, private_key + KYBER_INDCPA_SECRETKEYBYTES, KYBER_PUBLICKEYBYTES);
+    } else {
+        /* For RESPONDER: private_key is just the precomputed shared secret (32 bytes).
+           The kyber_pub field (ciphertext) will be set separately via set_keypair. */
+        if (st->parent.private_key_len != PQCLEAN_KYBER1024_CLEAN_CRYPTO_BYTES)
+            return NOISE_ERROR_INVALID_PRIVATE_KEY;
+        memcpy(st->kyber_priv, private_key, PQCLEAN_KYBER1024_CLEAN_CRYPTO_BYTES);
+    }
+
     return NOISE_ERROR_NONE;
 }
 
@@ -79,8 +91,24 @@ static int noise_kyber_set_keypair
         (NoiseDHState *state, const uint8_t *private_key,
          const uint8_t *public_key)
 {
-    /* Ignore the public key and re-generate from the private key */
-    return noise_kyber_set_keypair_private(state, private_key);
+    NoiseKyberState *st = (NoiseKyberState *)state;
+    int err;
+
+    /* Set the private key part */
+    err = noise_kyber_set_keypair_private(state, private_key);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    if (state->role == NOISE_ROLE_RESPONDER) {
+        /* For RESPONDER: public_key is the ciphertext (1568 bytes) */
+        if (st->parent.public_key_len != PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES)
+            return NOISE_ERROR_INVALID_PUBLIC_KEY;
+        memcpy(st->kyber_pub, public_key, st->parent.public_key_len);
+    }
+    /* For INITIATOR: public key was already extracted from private_key
+       in set_keypair_private, so we ignore the public_key parameter */
+
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_kyber_validate_public_key
