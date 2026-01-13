@@ -10,7 +10,7 @@ GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/p448 \
 	-I$(GOLDILOCKS_SRCDIR)/p448/@GOLDILOCKS_ARCH@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS) -I$(top_srcdir)/src/crypto/pqclean/common
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS)
 AM_CFLAGS = @WARNING_FLAGS@ -DKYBER_K=4
 
 if USE_OPENSSL
