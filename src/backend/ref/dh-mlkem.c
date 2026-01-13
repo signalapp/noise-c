@@ -24,6 +24,11 @@
 #include "crypto/mlkem-libjade/src/mlkem1024_amd64_avx2/api.h"
 #include <string.h>
 
+#define MLKEM_SECRETKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES 
+#define MLKEM_PUBLICKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES
+#define MLKEM_CIPHERTEXTBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES 
+#define MLKEM_INDCPA_SECRETKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_INDCPA_SECRETKEYBYTES
+
 #define MAX_OF(a, b) ((a) > (b) ? (a) : (b))
 
 uint8_t* __jasmin_syscall_randombytes__(uint8_t* dest, uint64_t length_in_bytes)
@@ -71,11 +76,21 @@ static int noise_mlkem_set_keypair_private
         (NoiseDHState *state, const uint8_t *private_key)
 {
     /* Private key is a concatenation of [priv_key_bytes][pub_key_bytes][pub_key_sha256] */
-    NoiseMlkemState *st = (NoiseMlkemState *)state;
-    if (st->parent.private_key_len != jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES)
-        return NOISE_ERROR_INVALID_PRIVATE_KEY;
-    memcpy(st->mlkem_priv, private_key, jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES);
-    memcpy(st->mlkem_pub, private_key + jade_kem_mlkem_mlkem1024_amd64_avx2_INDCPA_SECRETKEYBYTES, jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES);
+    NoiseMlkemState *st = (NoiseMlkemState *)state;    if (state->role == NOISE_ROLE_INITIATOR) {
+        /* For INITIATOR: private_key is the full Kyber secret key (3168 bytes)
+           which is a concatenation of [priv_key_bytes][pub_key_bytes][pub_key_sha256] */
+        if (st->parent.private_key_len != MLKEM_SECRETKEYBYTES)
+            return NOISE_ERROR_INVALID_PRIVATE_KEY;
+        memcpy(st->mlkem_priv, private_key, MLKEM_SECRETKEYBYTES);
+        /* Extract the public key from the secret key structure */
+        memcpy(st->mlkem_pub, private_key + MLKEM_INDCPA_SECRETKEYBYTES, MLKEM_PUBLICKEYBYTES);
+    } else {
+        /* For RESPONDER: private_key is just the precomputed shared secret (32 bytes).
+           The kyber_pub field (ciphertext) will be set separately via set_keypair. */
+        if (st->parent.private_key_len != jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES)
+            return NOISE_ERROR_INVALID_PRIVATE_KEY;
+        memcpy(st->mlkem_priv, private_key, jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES);
+    }
     return NOISE_ERROR_NONE;
 }
 

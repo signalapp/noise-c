@@ -1047,6 +1047,7 @@ static uint8_t const noise_pattern_XXfallback_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
+    NOISE_TOKEN_E1,
     NOISE_TOKEN_EE,
     NOISE_TOKEN_EKEM1,
     NOISE_TOKEN_S,

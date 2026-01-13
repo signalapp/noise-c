@@ -526,7 +526,7 @@ void test_patterns(void)
     check_pattern(NOISE_PATTERN_XX_FALLBACK_HFS,
                   "Noise_XXfallback+hfs(s, rs, re)",
                   "<- e, e1\n",
-                  "-> e, ee, ekem1, s, se\n"
+                  "-> e, e1, ee, ekem1, s, se\n"
                   "<- s, es\n");
 
     check_pattern(NOISE_PATTERN_NX_NOIDH_HFS,
