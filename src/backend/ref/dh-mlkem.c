@@ -22,6 +22,7 @@
 
 #include "internal.h"
 #include "crypto/mlkem-libjade/src/mlkem1024_amd64_avx2/api.h"
+#include "crypto/newhope/fips202.h"
 #include <string.h>
 
 #define MLKEM_SECRETKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES 
@@ -37,6 +38,32 @@ uint8_t* __jasmin_syscall_randombytes__(uint8_t* dest, uint64_t length_in_bytes)
   return dest;
 }
 
+/**
+ * Kyber Round 3 KDF shim: derives a Kyber-compatible shared secret from
+ * an ML-KEM shared secret and ciphertext.
+ *
+ * K_final = SHAKE256(K_mlkem || SHA3-256(ciphertext), 32)
+ *
+ * This allows ML-KEM (FIPS 203) to produce wire-compatible output with
+ * Kyber Round 3 clients. The k_mlkem and shared_key_out pointers may alias.
+ */
+static void kyber_kdf(uint8_t *shared_key_out,
+                      const uint8_t *k_mlkem,
+                      const uint8_t *ciphertext, size_t ct_len)
+{
+    uint8_t kdf_input[64]; /* K_mlkem (32) || SHA3-256(ct) (32) */
+
+    /* Copy K_mlkem first (allows k_mlkem and shared_key_out to alias) */
+    memcpy(kdf_input, k_mlkem, 32);
+
+    /* SHA3-256(ciphertext) into second half */
+    sha3256(kdf_input + 32, ciphertext, ct_len);
+
+    /* SHAKE256(kdf_input, 32) -> shared_key_out */
+    shake256(shared_key_out, 32, kdf_input, 64);
+
+    noise_clean(kdf_input, sizeof(kdf_input));
+}
 
 typedef struct NoiseMlkemState_s
 {
@@ -57,12 +84,15 @@ static int noise_mlkem_generate_keypair
         /* Generating the keypair for Bob relative to Alice's parameters */
         if (!os || os->parent.key_type == NOISE_KEY_TYPE_NO_KEY)
             return NOISE_ERROR_INVALID_STATE;
-        
+
         jade_kem_mlkem_mlkem1024_amd64_avx2_enc(
             pub_dealias,
             st->mlkem_priv,
             os->mlkem_pub);
-        memcpy(st->mlkem_pub, pub_dealias,jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES);
+        /* Apply Kyber R3 KDF: K = SHAKE256(K_mlkem || SHA3-256(ct), 32) */
+        kyber_kdf(st->mlkem_priv, st->mlkem_priv, pub_dealias,
+                  jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES);
+        memcpy(st->mlkem_pub, pub_dealias, jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES);
     } else {
         /* Generate the keypair for Alice */
         jade_kem_mlkem_mlkem1024_amd64_avx2_keypair(
@@ -124,7 +154,7 @@ static int noise_mlkem_calculate
     NoiseMlkemState *pub_st = (NoiseMlkemState *)public_key_state;
     if (priv_st->parent.role == NOISE_ROLE_RESPONDER) {
         /* We already generated the shared secret for Bob when we
-         * generated the "keypair" for him. */
+         * generated the "keypair" for him (KDF already applied). */
         memcpy(shared_key, priv_st->mlkem_priv, jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES);
     } else {
         /* Generate the shared secret for Alice */
@@ -132,6 +162,9 @@ static int noise_mlkem_calculate
             shared_key,
             pub_st->mlkem_pub,
             priv_st->mlkem_priv);
+        /* Apply Kyber R3 KDF: K = SHAKE256(K_mlkem || SHA3-256(ct), 32) */
+        kyber_kdf(shared_key, shared_key, pub_st->mlkem_pub,
+                  jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES);
     }
     return NOISE_ERROR_NONE;
 }
