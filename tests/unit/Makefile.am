@@ -7,6 +7,10 @@ test_noise_SOURCES = \
 	test-errors.c \
 	test-handshakestate.c \
 	test-hashstate.c \
+	test-fips202.c \
+	test-kyber.c \
+	test-kyber-kat.c \
+	test-kyber-kat-noise.c \
 	test-main.c \
 	test-names.c \
 	test-patterns.c \
