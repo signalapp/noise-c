@@ -136,7 +136,7 @@ static int set_fixed_ephemeral(NoiseDHState *dh)
     } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
         return noise_dhstate_set_keypair_private
             (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
-    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_MLKEM1024) {
+    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_KYBER1024) {
         return noise_dhstate_set_keypair_private
             (dh, fixed_ephemeral_kyber1024, sizeof(fixed_ephemeral_kyber1024));
     } else {

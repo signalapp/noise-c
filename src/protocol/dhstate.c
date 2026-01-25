@@ -81,8 +81,8 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
         *state = noise_curve448_new();
         break;
 
-    case NOISE_DH_MLKEM1024: {
-        NoiseDHState* got = noise_mlkem_new();
+    case NOISE_DH_KYBER1024: {
+        NoiseDHState* got = noise_kyber_new();
         *state = got;
     }   break;
 

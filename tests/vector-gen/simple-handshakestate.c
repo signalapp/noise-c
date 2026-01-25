@@ -241,7 +241,7 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
         switch (*(handshake->pattern)++) {
         case NOISE_TOKEN_E:
             if (noise_dhstate_get_dh_id(handshake->dh_private)
-                        == NOISE_DH_MLKEM1024 &&
+                        == NOISE_DH_KYBER1024 &&
                     noise_dhstate_get_role(handshake->dh_private)
                         == NOISE_ROLE_RESPONDER) {
                 /* New Hope needs special support for dependent fixed keygen.

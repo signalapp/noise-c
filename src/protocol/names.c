@@ -67,7 +67,7 @@ static NoiseIdMapping const algorithm_names[] = {
     /* Diffie-Hellman algorithms */
     {NOISE_DH_CURVE25519,       "25519",         5},
     {NOISE_DH_CURVE448,         "448",           3},
-    {NOISE_DH_MLKEM1024,        "Mlkem1024",     9},
+    {NOISE_DH_KYBER1024,        "Kyber1024",     9},
 
     /* Handshake patterns */
     {NOISE_PATTERN_N,           "N",             1},

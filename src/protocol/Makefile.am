@@ -41,7 +41,7 @@ libnoiseprotocol_a_SOURCES = \
 	symmetricstate.c \
 	util.c \
 	../backend/ref/dh-curve448.c \
-	../backend/ref/dh-mlkem.c \
+	../backend/ref/dh-kyber.c \
 	../crypto/newhope/fips202.c \
 	../backend/ref/hash-blake2s.c \
 	../crypto/blake2/blake2s.c \

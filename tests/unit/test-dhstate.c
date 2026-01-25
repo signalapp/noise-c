@@ -46,7 +46,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
 
     /* Convert the test strings into binary data */
     size_t priv_len = private_key_len;
-    if (id == NOISE_DH_MLKEM1024 && role == NOISE_ROLE_RESPONDER) {
+    if (id == NOISE_DH_KYBER1024 && role == NOISE_ROLE_RESPONDER) {
         /* For Kyber responder, the "private" value is the precomputed
            shared secret (32 bytes) rather than the initiator's secret key. */
         priv_len = shared_key_len;
@@ -81,7 +81,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_dhstate_new_by_id(&state2, id), NOISE_ERROR_NONE);
     compare(noise_dhstate_set_role(state2, inverse_role), NOISE_ERROR_NONE);
     compare(noise_dhstate_get_dh_id(state2), id);
-    if (id != NOISE_DH_MLKEM1024 && public_key_len == other_public_key_len)
+    if (id != NOISE_DH_KYBER1024 && public_key_len == other_public_key_len)
         compare(noise_dhstate_get_private_key_length(state2), private_key_len);
     compare(noise_dhstate_get_public_key_length(state2), other_public_key_len);
     compare(noise_dhstate_get_shared_key_length(state2), shared_key_len);
@@ -222,7 +222,7 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_dhstate_get_private_key_length(state1), priv_len);
     compare(noise_dhstate_get_public_key_length(state1), public_key_len);
     compare(noise_dhstate_get_shared_key_length(state1), shared_key_len);
-    if (id != NOISE_DH_MLKEM1024 && public_key_len == other_public_key_len)
+    if (id != NOISE_DH_KYBER1024 && public_key_len == other_public_key_len)
         compare(noise_dhstate_get_private_key_length(state2), private_key_len);
     compare(noise_dhstate_get_public_key_length(state2), other_public_key_len);
     compare(noise_dhstate_get_shared_key_length(state2), shared_key_len);
@@ -385,9 +385,9 @@ static void dhstate_check_test_vectors(void)
          "0x00000000000000000000000000000000000000000000000000000000"
            "00000000000000000000000000000000000000000000000000000000");
 
-    /* MLKEM1024 - Test vectors from the reference implementation of "torref" */
+    /* Kyber1024 - Test vectors from the reference implementation of "torref" */
     check_dh
-        (NOISE_DH_MLKEM1024, 3168, 1568, 1568, 32, "MLKEM1024",
+        (NOISE_DH_KYBER1024, 3168, 1568, 1568, 32, "Kyber1024",
          0, NOISE_ROLE_INITIATOR,
          /* Alice's private key */
          "0x891865aef10cb22387cae735180b85d14c436f931790804047f7363715b2c1c4"
@@ -592,7 +592,7 @@ static void dhstate_check_test_vectors(void)
          /* Shared secret */
          "0xd21f12340f877656fbb2733d0c73cab35a689313892a28d539a43442d7c40a83");
     check_dh
-        (NOISE_DH_MLKEM1024, 32, 2048, 1824, 32, "Mlkem1024",
+        (NOISE_DH_KYBER1024, 32, 2048, 1824, 32, "Kyber1024",
          0, NOISE_ROLE_RESPONDER,
          "0x891865aef10cb22387cae735180b85d14c436f931790804047f7363715b2c1c4"
            "30d39667f765af885a7ca5aa79dc54cdfcbac3b7aa5b55868b79d69498f858a7"
@@ -822,12 +822,12 @@ static void check_dh_generate(int id)
 
     /* Generate keypairs for Alice and Bob */
     compare(noise_dhstate_generate_keypair(state1), NOISE_ERROR_NONE);
-    if (id != NOISE_DH_MLKEM1024) {
+    if (id != NOISE_DH_KYBER1024) {
         verify(!noise_dhstate_is_ephemeral_only(state1));
         verify(!noise_dhstate_is_ephemeral_only(state2));
         compare(noise_dhstate_generate_keypair(state2), NOISE_ERROR_NONE);
     } else {
-        /* Check the MLKEM1024 parameters */
+        /* Check the Kyber1024 parameters */
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
         compare(noise_dhstate_get_private_key_length(state1), 3168);
@@ -835,7 +835,7 @@ static void check_dh_generate(int id)
         compare(noise_dhstate_get_private_key_length(state2), 32);
         compare(noise_dhstate_get_public_key_length(state2), 1568);
 
-        /* MLKEM1024 is "mutual" so Bob's object needs to know about Alice's
+        /* Kyber1024 is "mutual" so Bob's object needs to know about Alice's
          * so that it will generate Bob's "keypair" with respect to the
          * parameters in Alice's public key. */
         compare(noise_dhstate_generate_dependent_keypair(state2, state1),
@@ -864,7 +864,7 @@ static void dhstate_check_generate_keypair(void)
 {
     check_dh_generate(NOISE_DH_CURVE25519);
     check_dh_generate(NOISE_DH_CURVE448);
-    check_dh_generate(NOISE_DH_MLKEM1024);
+    check_dh_generate(NOISE_DH_KYBER1024);
 }
 
 /* Check other error conditions that can be reported by the functions */
