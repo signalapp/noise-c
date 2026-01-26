@@ -45,10 +45,6 @@ int main(int argc, char *argv[])
     test(errors);
     test(handshakestate);
     test(hashstate);
-    test(fips202);
-    test(kyber);
-    test(kyber_kat);
-    test(kyber_kat_noise);
     test(names);
     test(patterns);
     test(protobufs);

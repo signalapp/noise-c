@@ -415,15 +415,3 @@ void sha3256(unsigned char *output, const unsigned char *input, unsigned int inp
   for(i=0;i<32;i++)
     output[i] = t[i];
 }
-
-void shake256(unsigned char *output, unsigned int outputByteLen, const unsigned char *input, unsigned int inputByteLen)
-{
-  uint64_t s[25];
-  unsigned char t[SHAKE256_RATE];
-  unsigned int i;
-
-  keccak_absorb(s, SHAKE256_RATE, input, inputByteLen, 0x1F);
-  keccak_squeezeblocks(t, 1, s, SHAKE256_RATE);
-  for(i=0;i<outputByteLen && i<SHAKE256_RATE;i++)
-    output[i] = t[i];
-}

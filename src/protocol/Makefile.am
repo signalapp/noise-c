@@ -42,7 +42,6 @@ libnoiseprotocol_a_SOURCES = \
 	util.c \
 	../backend/ref/dh-curve448.c \
 	../backend/ref/dh-kyber.c \
-	../crypto/newhope/fips202.c \
 	../backend/ref/hash-blake2s.c \
 	../crypto/blake2/blake2s.c \
 	../crypto/curve448/curve448.c \
