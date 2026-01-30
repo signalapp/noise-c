@@ -852,7 +852,6 @@ int main(int argc, char *argv[])
         retval |= process_file("cacophony.txt");
         retval |= process_file("noise-c-basic.txt");
         retval |= process_file("noise-c-fallback.txt");
-        // retval |= process_file("noise-c-hybrid.txt");
     }
     return retval;
 }
