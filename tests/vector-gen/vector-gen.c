@@ -1082,7 +1082,7 @@ static void hybrid_patterns(int with_ssk)
     int first = 1;
     int fallback_id;
 
-    /* Basic hybrid patterns involving 25519+448 and 25519+kyber1024 */
+    /* Basic hybrid patterns involving 25519+448 and 25519+Kyber1024 */
     memset(&id, 0, sizeof(id));
     for (id.pattern_id = NOISE_PATTERN_NN_HFS; id.pattern_id <= NOISE_PATTERN_IX_HFS; ++id.pattern_id) {
         for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
