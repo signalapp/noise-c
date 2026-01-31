@@ -28,6 +28,7 @@
 #define MLKEM_PUBLICKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES
 #define MLKEM_CIPHERTEXTBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES 
 #define MLKEM_INDCPA_SECRETKEYBYTES jade_kem_mlkem_mlkem1024_amd64_avx2_INDCPA_SECRETKEYBYTES
+#define MLKEM_SS_SIZE jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES
 
 #define MAX_OF(a, b) ((a) > (b) ? (a) : (b))
 
@@ -41,9 +42,9 @@ typedef struct NoiseKyberState_s
 {
     struct NoiseDHState_s parent;
     /* for INITIATOR, this is the secret key.  for RESPONDER, this is the precomputed shared bytes */
-    uint8_t kyber_priv[MAX_OF(jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES, jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES)];
+    uint8_t kyber_priv[MAX_OF(MLKEM_SECRETKEYBYTES, MLKEM_SS_SIZE)];
     /* for INITIATOR, this is the public key.  for RESPONDER, this is the CIPHERTEXT */
-    uint8_t kyber_pub[MAX_OF(jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES, jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES)];
+    uint8_t kyber_pub[MAX_OF(MLKEM_PUBLICKEYBYTES, MLKEM_CIPHERTEXTBYTES)];
 } NoiseKyberState;
 
 static int noise_kyber_generate_keypair
@@ -85,9 +86,9 @@ static int noise_kyber_set_keypair_private
     } else {
         /* For RESPONDER: private_key is just the precomputed shared secret (32 bytes).
            The kyber_pub field (ciphertext) will be set separately via set_keypair. */
-        if (st->parent.private_key_len != jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES)
+        if (st->parent.private_key_len != MLKEM_SS_SIZE)
             return NOISE_ERROR_INVALID_PRIVATE_KEY;
-        memcpy(st->kyber_priv, private_key, jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES);
+        memcpy(st->kyber_priv, private_key, MLKEM_SS_SIZE);
     }
     return NOISE_ERROR_NONE;
 }
@@ -123,7 +124,7 @@ static int noise_kyber_calculate
     if (priv_st->parent.role == NOISE_ROLE_RESPONDER) {
         /* We already generated the shared secret for Bob when we
          * generated the "keypair" for him. */
-        memcpy(shared_key, priv_st->kyber_priv, jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES);
+        memcpy(shared_key, priv_st->kyber_priv, MLKEM_SS_SIZE);
     } else {
         /* Generate the shared secret for Alice */
         jade_kem_mlkem_mlkem1024_amd64_avx2_dec(
@@ -138,11 +139,11 @@ static void noise_kyber_change_role(NoiseDHState *state)
 {
     /* Change the size of the keys based on the object's role */
     if (state->role == NOISE_ROLE_RESPONDER) {
-        state->private_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES;
-        state->public_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_CIPHERTEXTBYTES;
+        state->private_key_len = MLKEM_SS_SIZE;
+        state->public_key_len = MLKEM_CIPHERTEXTBYTES;
     } else {
-        state->private_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES;
-        state->public_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES;
+        state->private_key_len = MLKEM_SECRETKEYBYTES;
+        state->public_key_len = MLKEM_PUBLICKEYBYTES;
     }
 }
 
@@ -154,9 +155,9 @@ NoiseDHState *noise_kyber_new(void)
     state->parent.dh_id = NOISE_DH_KYBER1024;
     state->parent.ephemeral_only = 1;
     state->parent.nulls_allowed = 0;
-    state->parent.private_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_SECRETKEYBYTES;
-    state->parent.public_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_PUBLICKEYBYTES;
-    state->parent.shared_key_len = jade_kem_mlkem_mlkem1024_amd64_avx2_BYTES;
+    state->parent.private_key_len = MLKEM_SECRETKEYBYTES;
+    state->parent.public_key_len = MLKEM_PUBLICKEYBYTES;
+    state->parent.shared_key_len = MLKEM_SS_SIZE;
     state->parent.private_key = state->kyber_priv;
     state->parent.public_key = state->kyber_pub;
     state->parent.generate_keypair = noise_kyber_generate_keypair;
