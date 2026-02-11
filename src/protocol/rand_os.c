@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
+#if defined(__WIN__) || defined(__CYGWIN32__)
 #include <windows.h>
 #include <wincrypt.h>
 #else
@@ -48,10 +48,10 @@
  * This module will require modification when porting to new systems.
  */
 
-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__APPLE__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__APPLE__)
 #define RANDOM_DEVICE   "/dev/urandom"
 #endif
-#if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
+#if defined(__WIN__) || defined(__CYGWIN32__)
 #define RANDOM_WIN32    1
 #endif
 

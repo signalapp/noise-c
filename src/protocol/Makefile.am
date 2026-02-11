@@ -27,6 +27,9 @@ ED25519_CPPFLAGS = -DED25519_CUSTOMHASH -DED25519_CUSTOMRANDOM
 AM_CPPFLAGS += $(ED25519_CPPFLAGS)
 endif
 
+.s.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
 libnoiseprotocol_a_SOURCES = \
 	cipherstate.c \
 	dhstate.c \

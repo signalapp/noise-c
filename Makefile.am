@@ -1,5 +1,9 @@
 
-SUBDIRS = include src tools tests examples doc
+SUBDIRS = include src tools tests doc
+
+if ENABLE_EXAMPLES
+SUBDIRS += examples
+endif
 
 EXTRA_DIST = README.md
 

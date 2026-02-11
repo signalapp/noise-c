@@ -23,9 +23,19 @@
 #ifndef NOISE_INTERNAL_H
 #define NOISE_INTERNAL_H
 
+#if defined(linux) || defined(__linux) || defined(__linux__)
+#define __LINUX__
+#elif defined(__WIN32__) || defined(WIN32)
+#define __WIN__
+#elif defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__NetBSD)
+#define __BSD__
+#endif
+
 #include <noise/protocol.h>
-#if defined(__WIN32__) || defined(WIN32)
+#if defined(__WIN__)
 #include <malloc.h>
+#elif defined(__BSD__)
+#include <stdlib.h>
 #else
 #include <alloca.h>
 #endif
